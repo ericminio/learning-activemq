@@ -3,9 +3,7 @@ package ericminio.activemq;
 import ericminio.support.AsyncHttpResponse;
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.apache.activemq.broker.BrokerService;
-import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.junit.After;
@@ -21,7 +19,7 @@ import static ericminio.support.AsyncGetRequest.asyncGet;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
 
-public class ActiveMqHttpTest {
+public class HttpGetTest {
 
     protected BrokerService broker;
     protected Session session;
@@ -44,25 +42,11 @@ public class ActiveMqHttpTest {
         stompUri = new URI(broker.addConnector("stomp://localhost:0").getPublishableConnectString());
         broker.start();
         broker.waitUntilStarted();
-
-        server = new Server();
-        ServerConnector connector = new ServerConnector(server);
-        connector.setPort(8888);
-
-        ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
-        context.setContextPath("");
-        context.addServlet(new ServletHolder(new MessageServlet()), "/message/*");
-        server.setHandler(context);
-        server.setConnectors(new Connector[] {
-                connector
-        });
-        server.start();
-
         factory = new ActiveMQConnectionFactory(tcpUri);
         connection = factory.createConnection();
         connection.start();
         session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-        producer = session.createProducer(session.createQueue("test"));
+        producer = session.createProducer(session.createQueue("this-queue"));
     }
 
 
@@ -76,8 +60,14 @@ public class ActiveMqHttpTest {
     }
 
     @Test
-    public void queueCanBeReadViaHttpGet() throws Exception {
-        AsyncHttpResponse response = asyncGet("http://localhost:8888/message/test?type=queue");
+    public void canBeDoneViaServletWrapper() throws Exception {
+        server = new Server(8888);
+        ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
+        context.setContextPath("");
+        context.addServlet(new ServletHolder(new MessageServlet()), "/message/*");
+        server.setHandler(context);
+        server.start();
+        AsyncHttpResponse response = asyncGet("http://localhost:8888/message/this-queue?type=queue");
         producer.send(session.createTextMessage("hello"));
 
         assertThat(response.getBody(), equalTo("hello"));
