@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package ericminio.support;
+package ericminio.activemq;
 
 
 import java.util.concurrent.TimeUnit;

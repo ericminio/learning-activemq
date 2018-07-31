@@ -1,5 +1,7 @@
 package ericminio.support;
 
+import ericminio.activemq.MessageServlet;
+import ericminio.activemq.Wait;
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.apache.activemq.broker.BrokerService;
 import org.eclipse.jetty.server.Connector;
@@ -7,7 +9,6 @@ import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
-import org.eclipse.jetty.webapp.WebAppContext;
 import org.junit.After;
 import org.junit.Before;
 import org.slf4j.Logger;

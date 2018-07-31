@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package ericminio.support;
+package ericminio.activemq;
 
 import org.apache.activemq.MessageAvailableConsumer;
 import org.apache.activemq.MessageAvailableListener;
