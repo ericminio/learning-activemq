@@ -49,15 +49,13 @@ public class HttpReadTest {
         session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
         producer = session.createProducer(session.createQueue("this-queue"));
 
-        server = new Server(8888);
         ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
         context.setInitParameter("org.apache.activemq.brokerURL", "vm://amq-broker");
-        context.setContextPath("");
-        context.addServlet(new ServletHolder(new MessageServlet()), "/message/*");
+        context.addServlet(MessageServlet.class, "/message/*");
+        server = new Server(8888);
         server.setHandler(context);
         server.start();
     }
-
 
     @After
     public void stopAll() throws Exception {
