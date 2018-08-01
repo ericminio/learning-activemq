@@ -63,7 +63,7 @@ public class HttpPublishTest {
     public void stopAll() throws Exception {
         session.close();
         connection.close();
-        if (server != null) { server.stop(); }
+        server.stop();
         broker.stop();
         broker.waitUntilStopped();
     }
