@@ -6,8 +6,7 @@ import org.eclipse.jetty.http.HttpMethod;
 
 public class PostRequest {
 
-    public static void post(String uri, String text) throws Exception {
-        String content = "body=" + text;
+    public static void post(String uri, String content) throws Exception {
         HttpClient httpClient = new HttpClient();
         httpClient.start();
         httpClient

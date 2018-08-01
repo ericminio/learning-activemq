@@ -71,7 +71,7 @@ public class HttpPublishTest {
     @Test
     public void isDoneViaPost() throws Exception {
         AsyncHttpResponse response = asyncGet("http://localhost:8888/message/this-queue?type=queue");
-        post("http://localhost:8888/message/this-queue?type=queue", "hello");
+        post("http://localhost:8888/message/this-queue?type=queue", "body=hello");
 
         assertThat(response.getBody(), equalTo("hello"));
     }
