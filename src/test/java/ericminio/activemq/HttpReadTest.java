@@ -32,7 +32,7 @@ public class HttpReadTest {
     private Connection connection;
 
     @Before
-    public void startActiveMq() throws Exception {
+    public void startActiveMqBehindJetty() throws Exception {
         broker = new BrokerService();
         broker.setBrokerName("amq-broker");
         broker.setPersistent(false);
