@@ -6,7 +6,6 @@ import org.apache.activemq.broker.BrokerService;
 import org.apache.activemq.web.MessageServlet;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletContextHandler;
-import org.eclipse.jetty.servlet.ServletHolder;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
