@@ -6,8 +6,10 @@ import org.apache.activemq.broker.BrokerService;
 import org.apache.activemq.web.MessageServlet;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletContextHandler;
+import org.eclipse.jetty.servlet.ServletHolder;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import static ericminio.support.AsyncGetRequest.asyncGet;
@@ -28,9 +30,11 @@ public class HttpPublishTest {
         broker.start();
         broker.waitUntilStarted();
 
+        ServletHolder holder = new ServletHolder(new MessageServlet());
+        holder.setInitParameter("maximumReadTimeout", String.valueOf(Long.MAX_VALUE));
         ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
         context.setInitParameter("org.apache.activemq.brokerURL", "vm://amq-broker");
-        context.addServlet(MessageServlet.class, "/message/*");
+        context.addServlet(holder, "/message/*");
         server = new Server(8888);
         server.setHandler(context);
         server.start();
@@ -46,6 +50,16 @@ public class HttpPublishTest {
     @Test
     public void isDoneViaPost() throws Exception {
         AsyncHttpResponse client = asyncGet("http://localhost:8888/message/this-queue?type=queue");
+        ThirdParty.post("http://localhost:8888/message/this-queue?type=queue", "body=hello");
+
+        assertThat(client.getBody(), equalTo("hello"));
+    }
+
+    @Test
+    @Ignore
+    public void timeoutParameterHelpToKeepAliveTheReadRequest() throws Exception {
+        AsyncHttpResponse client = asyncGet("http://localhost:8888/message/this-queue?type=queue");
+        Thread.sleep(25000);
         ThirdParty.post("http://localhost:8888/message/this-queue?type=queue", "body=hello");
 
         assertThat(client.getBody(), equalTo("hello"));
