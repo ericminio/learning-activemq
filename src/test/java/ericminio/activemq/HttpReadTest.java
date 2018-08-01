@@ -2,7 +2,6 @@ package ericminio.activemq;
 
 import ericminio.support.AsyncHttpResponse;
 import org.apache.activemq.ActiveMQConnectionFactory;
-import org.apache.activemq.broker.BrokerRegistry;
 import org.apache.activemq.broker.BrokerService;
 import org.apache.activemq.web.MessageServlet;
 import org.eclipse.jetty.server.Server;
