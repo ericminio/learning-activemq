@@ -4,7 +4,7 @@ import org.eclipse.jetty.client.HttpClient;
 import org.eclipse.jetty.client.util.StringContentProvider;
 import org.eclipse.jetty.http.HttpMethod;
 
-public class PostRequest {
+public class ThirdParty {
 
     public static void post(String uri, String content) throws Exception {
         HttpClient httpClient = new HttpClient();

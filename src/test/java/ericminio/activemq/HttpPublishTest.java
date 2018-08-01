@@ -1,6 +1,7 @@
 package ericminio.activemq;
 
 import ericminio.support.AsyncHttpResponse;
+import ericminio.support.ThirdParty;
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.apache.activemq.broker.BrokerService;
 import org.apache.activemq.web.MessageServlet;
@@ -17,7 +18,6 @@ import javax.jms.Session;
 import java.net.URI;
 
 import static ericminio.support.AsyncGetRequest.asyncGet;
-import static ericminio.support.PostRequest.post;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
 
@@ -70,9 +70,9 @@ public class HttpPublishTest {
 
     @Test
     public void isDoneViaPost() throws Exception {
-        AsyncHttpResponse response = asyncGet("http://localhost:8888/message/this-queue?type=queue");
-        post("http://localhost:8888/message/this-queue?type=queue", "body=hello");
+        AsyncHttpResponse client = asyncGet("http://localhost:8888/message/this-queue?type=queue");
+        ThirdParty.post("http://localhost:8888/message/this-queue?type=queue", "body=hello");
 
-        assertThat(response.getBody(), equalTo("hello"));
+        assertThat(client.getBody(), equalTo("hello"));
     }
 }
