@@ -2,7 +2,9 @@ package ericminio.activemq;
 
 import ericminio.support.AsyncHttpResponse;
 import org.apache.activemq.ActiveMQConnectionFactory;
+import org.apache.activemq.broker.BrokerRegistry;
 import org.apache.activemq.broker.BrokerService;
+import org.apache.activemq.web.MessageServlet;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
@@ -19,7 +21,7 @@ import static ericminio.support.AsyncGetRequest.asyncGet;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
 
-public class HttpGetTest {
+public class HttpReadTest {
 
     protected BrokerService broker;
     protected Session session;
@@ -32,7 +34,7 @@ public class HttpGetTest {
     private Connection connection;
 
     @Before
-    public void setUp() throws Exception {
+    public void startActiveMq() throws Exception {
         broker = new BrokerService();
         broker.setBrokerName("amq-broker");
         broker.setPersistent(false);
@@ -51,10 +53,10 @@ public class HttpGetTest {
 
 
     @After
-    public void tearDown() throws Exception {
+    public void stopAll() throws Exception {
         session.close();
         connection.close();
-        server.stop();
+        if (server != null) { server.stop(); }
         broker.stop();
         broker.waitUntilStopped();
     }
@@ -63,6 +65,7 @@ public class HttpGetTest {
     public void canBeDoneViaServletWrapper() throws Exception {
         server = new Server(8888);
         ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
+        context.setInitParameter("org.apache.activemq.brokerURL", "vm://localhost");
         context.setContextPath("");
         context.addServlet(new ServletHolder(new MessageServlet()), "/message/*");
         server.setHandler(context);
