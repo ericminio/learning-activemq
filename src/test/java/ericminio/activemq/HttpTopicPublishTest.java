@@ -21,6 +21,7 @@ public class HttpTopicPublishTest {
     protected BrokerService broker;
     private Server server;
     private int port = 8080;
+    String url = "http://localhost:" + port + "/message/this-topic";
 
     @Before
     public void startActiveMqBehindJetty() throws Exception {
@@ -48,7 +49,6 @@ public class HttpTopicPublishTest {
 
     @Test
     public void isDoneViaPost() throws Exception {
-        String url = "http://localhost:" + port + "/message/this-topic";
         AsyncHttpResponse client = asyncGet(url);
         ThirdParty.post(url, "body=hello");
 
@@ -57,12 +57,22 @@ public class HttpTopicPublishTest {
 
     @Test
     public void canBeReadByTwoClients() throws Exception {
-        String url = "http://localhost:" + port + "/message/this-topic";
         AsyncHttpResponse client1 = asyncGet(url);
         AsyncHttpResponse client2 = asyncGet(url);
         ThirdParty.post(url, "body=hello");
 
         assertThat(client1.getBody(), equalTo("hello"));
         assertThat(client2.getBody(), equalTo("hello"));
+    }
+
+    @Test
+    public void clientCanReadSeveralMessages() throws Exception {
+        AsyncHttpResponse client = asyncGet(url);
+        ThirdParty.post(url, "body=first");
+        assertThat(client.getBody(), equalTo("first"));
+
+        client = asyncGet(url);
+        ThirdParty.post(url, "body=second");
+        assertThat(client.getBody(), equalTo("second"));
     }
 }
